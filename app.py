@@ -1,5 +1,5 @@
 
-from flask import Flask, request, render_template,  redirect, flash, url_for, session, jsonify
+from flask import Flask, request, render_template, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db,  connect_db, Cupcake
 
@@ -37,6 +37,9 @@ def serialize_cupcake(cupcake):
         "image": cupcake.image,
     }
 
+@app.route('/')
+def index_page():
+    return render_template('index.html')
 
 @app.route("/api/cupcakes")
 def list_all_cupcakes():
@@ -45,7 +48,7 @@ def list_all_cupcakes():
     cupcakes = Cupcake.query.all()
     serialized = [serialize_cupcake(c) for c in cupcakes]
 
-    return jsonify(cupcakess=serialized)
+    return jsonify(cupcakes=serialized)
     # end list_all_cupcakes
 
 @app.route("/api/cupcakes/<cupcake_id>")
@@ -78,7 +81,7 @@ def create_cupcake():
     serialized = serialize_cupcake(new_cupcake)
 
     # Return w/status code 201 --- return tuple (json, status)
-    return ( jsonify(cupcake=serialized), 201 )
+    return ( jsonify(cupcake=serialized), 201)
     # end create_cupcake
 
 @app.route("/api/cupcakes/<cupcake_id>", methods =["PATCH"])
